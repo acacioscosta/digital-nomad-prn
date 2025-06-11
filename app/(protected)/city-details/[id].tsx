@@ -1,9 +1,53 @@
-import { Text, View } from "react-native";
+import { Divider } from '@/src/components/Divider'
+import { Screen } from '@/src/components/Screen'
+import { Text } from '@/src/components/Text'
+import { CityDetailsHeader } from '@/src/containers/CityDetailsHeader'
+import { CityDetailsInfo } from '@/src/containers/CityDetailsInfo'
+import { CityDetailsMap } from '@/src/containers/CityDetailsMap'
+import { CityDetailsRelatedCities } from '@/src/containers/CityDetailsRelatedCities'
+import { CityDetailsTouristAttraction } from '@/src/containers/CityDetailsTouristAttraction'
+import { useCityDetails } from '@/src/data/useCityDetails'
+import { useLocalSearchParams } from 'expo-router'
 
 export default function CityDetails() {
+  const { id } = useLocalSearchParams<{ id: string }>()
+  const city = useCityDetails(id)
+
+  if (!city) {
+    return (
+      <Screen>
+        <Text>City not found</Text>
+      </Screen>
+    )
+  }
+
   return (
-    <View>
-      <Text>City Details</Text>
-    </View>
+    <Screen style={{ paddingHorizontal: 0 }} scrollable>
+      <CityDetailsHeader
+        id={city.id}
+        coverImage={city.coverImage}
+        categories={city.categories}
+      />
+
+      <CityDetailsInfo
+        name={city.name}
+        country={city.country}
+        description={city.description}
+      />
+
+      <Divider paddingHorizontal='padding' />
+
+      <CityDetailsTouristAttraction
+        touristAttractions={city.touristAttractions}
+      />
+
+      <Divider paddingHorizontal='padding' />
+
+      <CityDetailsMap />
+
+      <Divider paddingHorizontal='padding' />
+
+      <CityDetailsRelatedCities />
+    </Screen>
   )
 }
